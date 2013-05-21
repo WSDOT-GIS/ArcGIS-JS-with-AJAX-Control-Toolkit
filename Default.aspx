@@ -8,20 +8,46 @@
 	<link rel="stylesheet" href="http://serverapi.arcgisonline.com/jsapi/arcgis/3.5/js/esri/css/esri.css">
 	<script data-dojo-config="{async: true}"></script>
 	<script src="http://serverapi.arcgisonline.com/jsapi/arcgis/3.5/"></script>
+	<style>
+		.accordion .header {
+			border: 1px solid black;
+			background-color: #a79191;
+		}
+		.accordion .selected-header {
+			border: 1px solid black;
+			background-color: yellow;
+		}
+	</style>
 </head>
 <body>
 	<form id="form1" runat="server">
 		<ajaxToolkit:ToolkitScriptManager runat="server"></ajaxToolkit:ToolkitScriptManager>
-		<ajaxToolkit:TabContainer ID="TabContainer1" runat="server">
-			<ajaxToolkit:TabPanel HeaderText="Other Tab" runat="server">
-				<ContentTemplate><p>This is just a placeholder.  Click on the "Map" tab.</p></ContentTemplate>
-			</ajaxToolkit:TabPanel>
-			<ajaxToolkit:TabPanel HeaderText="Map" runat="server">
-				<ContentTemplate>
-					<div id="map"></div>
-				</ContentTemplate>
-			</ajaxToolkit:TabPanel>
-		</ajaxToolkit:TabContainer>
+		<ajaxToolkit:Accordion ID="Accordion1" runat="server" CssClass="accordion" HeaderCssClass="header" HeaderSelectedCssClass="selected-header">
+			<Panes>
+				<ajaxToolkit:AccordionPane runat="server" ID="PlaceholderPane">
+					<Header>Placeholder</Header>
+					<Content>Go to the map pane</Content>
+				</ajaxToolkit:AccordionPane>
+				<ajaxToolkit:AccordionPane runat="server" ID="MapPane">
+					<Header>Map</Header>
+					<Content>
+						<ajaxToolkit:TabContainer ID="TabContainer1" runat="server">
+							<ajaxToolkit:TabPanel ID="TabPanel1" HeaderText="Other Tab" runat="server">
+								<ContentTemplate>
+									<p>This is just a placeholder.  Click on the "Map" tab.</p>
+								</ContentTemplate>
+							</ajaxToolkit:TabPanel>
+							<ajaxToolkit:TabPanel ID="TabPanel2" HeaderText="Map" runat="server">
+								<ContentTemplate>
+									<div id="map"></div>
+								</ContentTemplate>
+							</ajaxToolkit:TabPanel>
+						</ajaxToolkit:TabContainer>
+					</Content>
+				</ajaxToolkit:AccordionPane>
+			</Panes>
+		</ajaxToolkit:Accordion>
+
 	</form>
 	<script>
 		/*global require*/
