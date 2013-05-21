@@ -1,6 +1,6 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="ArcGisJSWithAjaxControlToolkit._Default" %>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
@@ -9,6 +9,9 @@
 	<script data-dojo-config="{async: true}"></script>
 	<script src="http://serverapi.arcgisonline.com/jsapi/arcgis/3.5/"></script>
 	<style>
+		.accordion .header, .accordion .selected-header {
+			padding: 0.2em 0.5em;
+		}
 		.accordion .header {
 			border: 1px solid black;
 			background-color: #a79191;
@@ -17,12 +20,17 @@
 			border: 1px solid black;
 			background-color: yellow;
 		}
+		#map {
+			width: 100%;
+			height: 100%;
+		}
 	</style>
 </head>
 <body>
 	<form id="form1" runat="server">
-		<ajaxToolkit:ToolkitScriptManager runat="server"></ajaxToolkit:ToolkitScriptManager>
-		<ajaxToolkit:Accordion ID="Accordion1" runat="server" CssClass="accordion" HeaderCssClass="header" HeaderSelectedCssClass="selected-header">
+		<ajaxToolkit:ToolkitScriptManager runat="server" CombineScripts="true"></ajaxToolkit:ToolkitScriptManager>
+		<ajaxToolkit:Accordion ID="Accordion1" runat="server" CssClass="accordion" 
+			HeaderCssClass="header" HeaderSelectedCssClass="selected-header" ContentCssClass="content">
 			<Panes>
 				<ajaxToolkit:AccordionPane runat="server" ID="PlaceholderPane">
 					<Header>Placeholder</Header>
@@ -32,12 +40,12 @@
 					<Header>Map</Header>
 					<Content>
 						<ajaxToolkit:TabContainer ID="TabContainer1" runat="server">
-							<ajaxToolkit:TabPanel ID="TabPanel1" HeaderText="Other Tab" runat="server">
+							<ajaxToolkit:TabPanel ID="PlaceholderTabPanel" HeaderText="Other Tab" runat="server">
 								<ContentTemplate>
 									<p>This is just a placeholder.  Click on the "Map" tab.</p>
 								</ContentTemplate>
 							</ajaxToolkit:TabPanel>
-							<ajaxToolkit:TabPanel ID="TabPanel2" HeaderText="Map" runat="server">
+							<ajaxToolkit:TabPanel ID="MapTabPanel" HeaderText="Map" runat="server">
 								<ContentTemplate>
 									<div id="map"></div>
 								</ContentTemplate>
@@ -51,13 +59,15 @@
 	</form>
 	<script>
 		/*global require*/
-		require(["esri/map", "dojo/ready"], function (Map, ready) {
+		/*jslint browser:true*/
+		require(["esri/map", "dojo/ready", "dojo/domReady!"], function (Map, ready) {
+			"use strict";
 			ready(function () {
 				var map;
 				map = new Map(document.getElementById("map"), {
 					basemap: "topo",
 					center: [-120.80566406246835, 47.41322033015946],
-					zoom: 7,
+					zoom: 6
 				});
 			});
 		});
