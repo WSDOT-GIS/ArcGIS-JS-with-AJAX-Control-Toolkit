@@ -5,6 +5,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
 	<title></title>
+	<link rel="stylesheet" href="http://serverapi.arcgisonline.com/jsapi/arcgis/3.5/js/esri/css/esri.css">
+	<script data-dojo-config="{async: true}"></script>
+	<script src="http://serverapi.arcgisonline.com/jsapi/arcgis/3.5/"></script>
 </head>
 <body>
 	<form id="form1" runat="server">
@@ -21,7 +24,17 @@
 		</ajaxToolkit:TabContainer>
 	</form>
 	<script>
-
+		/*global require*/
+		require(["esri/map", "dojo/ready"], function (Map, ready) {
+			ready(function () {
+				var map;
+				map = new Map(document.getElementById("map"), {
+					basemap: "topo",
+					center: [-120.80566406246835, 47.41322033015946],
+					zoom: 7,
+				});
+			});
+		});
 	</script>
 </body>
 </html>
