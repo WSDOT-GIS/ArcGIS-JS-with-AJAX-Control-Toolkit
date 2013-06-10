@@ -1,0 +1,34 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title></title>
+	<link rel="stylesheet" href="http://serverapi.arcgisonline.com/jsapi/arcgis/3.5/js/esri/css/esri.css">
+	<script data-dojo-config="{async: true}"></script>
+	<script src="http://serverapi.arcgisonline.com/jsapi/arcgis/3.5/"></script>
+	<style>
+	 body {
+		 padding: 0;
+		 margin: 0;
+	 }
+	</style>
+</head>
+<body>
+	<div id="map">
+	<script>
+		/*global require*/
+		/*jslint browser:true*/
+		require(["esri/map", "dojo/ready", "dojo/domReady!"], function (Map, ready) {
+			"use strict";
+			ready(function () {
+				var map;
+				map = new Map(document.getElementById("map"), {
+					basemap: "topo",
+					center: [-120.80566406246835, 47.41322033015946],
+					zoom: 6
+				});
+			});
+		});
+	</script>
+	</div>
+</body>
+</html>

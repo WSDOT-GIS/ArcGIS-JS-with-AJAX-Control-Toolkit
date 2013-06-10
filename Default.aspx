@@ -5,9 +5,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
 	<title></title>
-	<link rel="stylesheet" href="http://serverapi.arcgisonline.com/jsapi/arcgis/3.5/js/esri/css/esri.css">
-	<script data-dojo-config="{async: true}"></script>
-	<script src="http://serverapi.arcgisonline.com/jsapi/arcgis/3.5/"></script>
 	<style>
 		.accordion .header, .accordion .selected-header {
 			padding: 0.2em 0.5em;
@@ -20,9 +17,9 @@
 			border: 1px solid black;
 			background-color: yellow;
 		}
-		#map {
-			width: 100%;
-			height: 100%;
+		#mapFrame {
+			width: 400px;
+			height: 400px;
 		}
 	</style>
 </head>
@@ -47,7 +44,8 @@
 							</ajaxToolkit:TabPanel>
 							<ajaxToolkit:TabPanel ID="MapTabPanel" HeaderText="Map" runat="server">
 								<ContentTemplate>
-									<div id="map"></div>
+									<%--<div id="map"></div>--%>
+									<iframe id="mapFrame" src="Map.html" ></iframe>
 								</ContentTemplate>
 							</ajaxToolkit:TabPanel>
 						</ajaxToolkit:TabContainer>
@@ -57,20 +55,5 @@
 		</ajaxToolkit:Accordion>
 
 	</form>
-	<script>
-		/*global require*/
-		/*jslint browser:true*/
-		require(["esri/map", "dojo/ready", "dojo/domReady!"], function (Map, ready) {
-			"use strict";
-			ready(function () {
-				var map;
-				map = new Map(document.getElementById("map"), {
-					basemap: "topo",
-					center: [-120.80566406246835, 47.41322033015946],
-					zoom: 6
-				});
-			});
-		});
-	</script>
 </body>
 </html>
