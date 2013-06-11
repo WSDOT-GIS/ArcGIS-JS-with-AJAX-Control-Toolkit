@@ -13,9 +13,18 @@
 			border: 1px solid black;
 			background-color: #a79191;
 		}
+		.accordion .content {
+			border: 2px inset lightgray;
+			padding: 1em;
+		}
 		.accordion .selected-header {
 			border: 1px solid black;
 			background-color: yellow;
+		}
+		/* Specify the size of the iframe here */
+		iframe[src='Map.html'] {
+			width: 100%;
+			height: 600px; /* Height must be an explicit value. */
 		}
 	</style>
 	<script>
@@ -23,6 +32,7 @@
 			"use strict";
 			var mapFrame, mapStuff;
 
+			// Create a global variable to act as a namespace for the global variables we need for this page.
 			if (!window.mapStuff) {
 				window.mapStuff = {};
 			}
@@ -36,13 +46,11 @@
 				if (!mapFrame) {
 					mapFrame = document.createElement("iframe");
 					mapFrame.src = "Map.html";
-					// Specify the desired size of the map iframe here.
-					mapFrame.width = 800;
-					mapFrame.height = 600;
 					tabPanel._element.appendChild(mapFrame);
 				}
 			}
 
+			// Make the onTabClick function globally available in the page.
 			window.mapStuff.onTabClick = onTabClick;
 		}());
 	</script>
