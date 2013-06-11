@@ -21,13 +21,18 @@
 	<script>
 		(function () {
 			"use strict";
-			var mapFrame;
+			var mapFrame, mapStuff;
 
 			if (!window.mapStuff) {
 				window.mapStuff = {};
 			}
 
-			function onTabClick(/** {Sys.Extended.UI.TabPanel} */ tabPanel, /** {EventArgs} */ e) {
+			/**
+			@param {Sys.Extended.UI.TabPanel} tabPanel
+			@param {HTMLDivElement} tabPanel._element
+			@param {EventArgs} e
+			*/
+			function onTabClick(tabPanel, e) {
 				var mapFrame;
 				if (!mapFrame) {
 					mapFrame = document.createElement("iframe");
@@ -63,7 +68,8 @@
 							</ajaxToolkit:TabPanel>
 							<ajaxToolkit:TabPanel ID="MapTabPanel" HeaderText="Map" runat="server" OnClientClick="mapStuff.onTabClick">
 								<ContentTemplate>
-									<%--<iframe id="mapFrame" src="Map.html" sandbox="allow-same-origin allow-scripts"></iframe>--%>
+									<%-- If the iframe needs to be created in the OnClientClick event to 
+										prevent the map from being forced to be 400 x 400 pixels. --%>
 								</ContentTemplate>
 							</ajaxToolkit:TabPanel>
 						</ajaxToolkit:TabContainer>
