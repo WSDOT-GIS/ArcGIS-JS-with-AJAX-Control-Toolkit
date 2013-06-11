@@ -17,11 +17,30 @@
 			border: 1px solid black;
 			background-color: yellow;
 		}
-		#mapFrame {
-			width: 400px;
-			height: 400px;
-		}
 	</style>
+	<script>
+		(function () {
+			"use strict";
+			var mapFrame;
+
+			if (!window.mapStuff) {
+				window.mapStuff = {};
+			}
+
+			function onTabClick(/** {Sys.Extended.UI.TabPanel} */ tabPanel, /** {EventArgs} */ e) {
+				var mapFrame;
+				if (!mapFrame) {
+					mapFrame = document.createElement("iframe");
+					mapFrame.src = "Map.html";
+					mapFrame.width = 800;
+					mapFrame.height = 600;
+					tabPanel._element.appendChild(mapFrame);
+				}
+			}
+
+			window.mapStuff.onTabClick = onTabClick;
+		}());
+	</script>
 </head>
 <body>
 	<form id="form1" runat="server">
@@ -42,10 +61,9 @@
 									<p>This is just a placeholder.  Click on the "Map" tab.</p>
 								</ContentTemplate>
 							</ajaxToolkit:TabPanel>
-							<ajaxToolkit:TabPanel ID="MapTabPanel" HeaderText="Map" runat="server">
+							<ajaxToolkit:TabPanel ID="MapTabPanel" HeaderText="Map" runat="server" OnClientClick="mapStuff.onTabClick">
 								<ContentTemplate>
-									<%--<div id="map"></div>--%>
-									<iframe id="mapFrame" src="Map.html" ></iframe>
+									<%--<iframe id="mapFrame" src="Map.html" sandbox="allow-same-origin allow-scripts"></iframe>--%>
 								</ContentTemplate>
 							</ajaxToolkit:TabPanel>
 						</ajaxToolkit:TabContainer>
