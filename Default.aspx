@@ -27,16 +27,16 @@
 				window.mapStuff = {};
 			}
 
-			/**
-			@param {Sys.Extended.UI.TabPanel} tabPanel
-			@param {HTMLDivElement} tabPanel._element
+			/** Creates the map iframe if it does not already exist.
+			@param {Sys.Extended.UI.TabPanel} tabPanel The tab panel that was just activated.
+			@param {HTMLDivElement} tabPanel._element This is the div element of the tab panel.
 			@param {EventArgs} e
 			*/
 			function onTabClick(tabPanel, e) {
-				var mapFrame;
 				if (!mapFrame) {
 					mapFrame = document.createElement("iframe");
 					mapFrame.src = "Map.html";
+					// Specify the desired size of the map iframe here.
 					mapFrame.width = 800;
 					mapFrame.height = 600;
 					tabPanel._element.appendChild(mapFrame);
@@ -55,7 +55,7 @@
 			<Panes>
 				<ajaxToolkit:AccordionPane runat="server" ID="PlaceholderPane">
 					<Header>Placeholder</Header>
-					<Content>Go to the map pane</Content>
+					<Content>Nothing to see here.  Click on the <em>Map</em> pane header.</Content>
 				</ajaxToolkit:AccordionPane>
 				<ajaxToolkit:AccordionPane runat="server" ID="MapPane">
 					<Header>Map</Header>
