@@ -62,8 +62,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Default.aspx" />
+    <Content Include="extentSelector.html" />
     <Content Include="Map.html" />
     <Content Include="offset.png" />
+    <Content Include="Scripts\wsdot\extentSelector.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -78,7 +80,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Scripts\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

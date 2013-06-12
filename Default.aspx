@@ -22,7 +22,7 @@
 			background-color: yellow;
 		}
 		/* Specify the size of the iframe here */
-		iframe[src='Map.html'] {
+		iframe[src='Map.html'], iframe[src='extentSelector.html'] {
 			width: 100%;
 			height: 600px; /* Height must be an explicit value. */
 		}
@@ -30,7 +30,7 @@
 	<script>
 		(function () {
 			"use strict";
-			var mapFrame, mapStuff;
+			var mapFrame, extentSelectorFrame, mapStuff;
 
 			// Create a global variable to act as a namespace for the global variables we need for this page.
 			if (!window.mapStuff) {
@@ -46,12 +46,33 @@
 				if (!mapFrame) {
 					mapFrame = document.createElement("iframe");
 					mapFrame.src = "Map.html";
+					mapFrame.name = "Map";
 					tabPanel._element.appendChild(mapFrame);
+				}
+			}
+
+			/** Creates the map iframe if it does not already exist.
+			@param {Sys.Extended.UI.TabPanel} tabPanel The tab panel that was just activated.
+			@param {HTMLDivElement} tabPanel._element This is the div element of the tab panel.
+			@param {EventArgs} e
+			*/
+			function onExtentSelectorTabClick(tabPanel, e) {
+				var extentSelector;
+				if (!extentSelectorFrame) {
+					extentSelectorFrame = document.createElement("iframe");
+					extentSelectorFrame.src = "extentSelector.html";
+					extentSelectorFrame.name = "extentSelector";
+					tabPanel._element.appendChild(extentSelectorFrame);
+					
+					extentSelectorFrame.contentWindow.addEventListener("extentchange", function (e) {
+						console.debug(e);
+					});
 				}
 			}
 
 			// Make the onTabClick function globally available in the page.
 			window.mapStuff.onTabClick = onTabClick;
+			window.mapStuff.onExtentSelectorTabClick = onExtentSelectorTabClick;
 		}());
 	</script>
 </head>
@@ -78,6 +99,11 @@
 								<ContentTemplate>
 									<%-- If the iframe needs to be created in the OnClientClick event to 
 										prevent the map from being forced to be 400 x 400 pixels. --%>
+								</ContentTemplate>
+							</ajaxToolkit:TabPanel>
+							<ajaxToolkit:TabPanel ID="ExtentSelectorTabPanel" HeaderText="ExtentSelector" runat="server" OnClientClick="mapStuff.onExtentSelectorTabClick">
+								<ContentTemplate>
+
 								</ContentTemplate>
 							</ajaxToolkit:TabPanel>
 						</ajaxToolkit:TabContainer>
