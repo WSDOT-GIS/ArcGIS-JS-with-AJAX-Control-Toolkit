@@ -32,11 +32,11 @@
 */
 
 define(["require", "dojo/Evented", "dojo/_base/declare", "dojo/on", "esri/map", "esri/graphic",
-	"esri/toolbars/draw", "dojo/_base/connect", "dojo/domReady!"
+	"esri/toolbars/draw", "dojo/_base/connect", "dojo/dom-construct", "dojo/dom-class", "dojo/domReady!"
 ], /** 
 * @exports wsdot/extentSelector 
 */
-function (require, Evented, declare, on, Map, Graphic, Draw, connect) {
+function (require, Evented, declare, on, Map, Graphic, Draw, connect, domConstruct, domClass) {
 	"use strict";
 
 	return declare([Evented], /** @lends extentSelector */ {
@@ -119,26 +119,22 @@ function (require, Evented, declare, on, Map, Graphic, Draw, connect) {
 				// Create the toolbar div and its buttons...
 				docFrag = document.createDocumentFragment();
 				toolbar = document.createElement("div");
-				toolbar.classList.add("map-toolbar");
+				//// Doesn't work in IE 8
+				//toolbar.classList.add("map-toolbar");
+				domClass.add(toolbar, "map-toolbar");
 				docFrag.appendChild(toolbar);
 
-				drawButton = document.createElement("button");
-				drawButton.type = "button";
-				drawButton.textContent = "Draw";
-				drawButton.id = "drawButton";
+				drawButton = domConstruct.toDom("<button id='drawButton' type='button'>Draw</button>");
 				toolbar.appendChild(drawButton);
 
-				clearButton = document.createElement("button");
-				clearButton.type = "button";
-				clearButton.textContent = "Clear";
-				clearButton.id = "clearButton";
+				clearButton = domConstruct.toDom("<button id='clearButton' type='button'>Clear</button>");
 				toolbar.appendChild(clearButton);
 
 				// Add the toolbar to the document.
 				mapRoot.appendChild(toolbar);
 
 				// Setup the button click events.
-				drawButton.onclick = function () {
+				on(drawButton, "click", function () {
 					if (this.textContent === "Draw") {
 						draw.activate(Draw.EXTENT, null);
 						this.textContent = "Cancel";
@@ -146,32 +142,21 @@ function (require, Evented, declare, on, Map, Graphic, Draw, connect) {
 						draw.deactivate();
 						this.textContent = "Draw";
 					}
-				};
+				});
 
-				clearButton.onclick = function () {
+				on(clearButton, "click", function () {
 					self.graphicsLayer.clear();
 					self.emit("extent-change", null);
-				};
-
-				////// Add the close button.
-				////closeButton = document.createElement("button");
-				////closeButton.id = "closeButton";
-				////closeButton.type = "button";
-				////closeButton.textContent = "Close";
-				////mapRoot.appendChild(closeButton);
-
-				////closeButton.onclick = function () {
-				////	window.close();
-				////};
+				});
 			}
 
 			if (typeof (mapDiv) === "string") {
 				mapDiv = document.getElementById(mapDiv);
 			}
 
-			if (!mapDiv instanceof Element) {
-				throw new TypeError("mapDiv must be either an Element or the id of an Element.");
-			}
+			//if (!mapDiv instanceof Element) {
+			//	throw new TypeError("mapDiv must be either an Element or the id of an Element.");
+			//}
 
 			self.map = new Map(mapDiv, {
 				basemap: "streets",
