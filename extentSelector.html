@@ -43,18 +43,15 @@
 				on(extentSelector, "extent-change", function (e) {
 					var evt, frame;
 					frame = window.frameElement;
-					if (window.CustomEvent) {
-						evt = new CustomEvent("extentchange", { detail: e });
+
+					// Although the CustomEvent constructor is not "undefined" in IE 10, calling it will cause an exception.
+					// evt = new CustomEvent("extentchange", { detail: e });
+					evt = document.createEvent("CustomEvent");
+					evt.initCustomEvent("extentchange", true, true, e);
+					if (frame.dispatchEvent) {
 						frame.dispatchEvent(evt);
-					} else if (document.createEvent) {
-						evt = document.createEvent("Event");
-						evt.detail = e;
-						frame.dispatchEvent(evt);
-					} else if (document.createEventObject) {
-						evt = document.createEventObject(window.event);
-						evt.detail = e;
-						// FIXME: IE 8: Microsoft JScript runtime error: Invalid argument.
-						document.fireEvent("extentchange", evt);
+					} else if (frame.fireEvent) {
+						frame.fireEvent("extentchange", evt);
 					}
 
 				});
