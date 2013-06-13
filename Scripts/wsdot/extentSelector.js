@@ -32,12 +32,46 @@
 */
 
 define(["require", "dojo/Evented", "dojo/_base/declare", "dojo/on", "esri/map", "esri/graphic",
-	"esri/toolbars/draw", "dojo/_base/connect", "dojo/dom-construct", "dojo/dom-class", "dojo/domReady!"
+	"esri/geometry/Extent", "esri/toolbars/draw", "dojo/_base/connect", "dojo/dom-construct",
+	"dojo/dom-class", "dojo/domReady!","//cdnjs.cloudflare.com/ajax/libs/proj4js/1.1.0/proj4js-compressed.js"
 ], /** 
 * @exports wsdot/extentSelector 
 */
-function (require, Evented, declare, on, Map, Graphic, Draw, connect, domConstruct, domClass) {
+function (require, Evented, declare, on, Map, Graphic, Extent, Draw, connect, domConstruct, domClass) {
 	"use strict";
+
+	var mapProj, stateProj;
+
+	Proj4js.defs["EPSG:2927"] = "+proj=lcc +lat_1=47.33333333333334 +lat_2=45.83333333333334 +lat_0=45.33333333333334 +lon_0=-120.5 +x_0=500000.0001016001 +y_0=0 +ellps=GRS80 +to_meter=0.3048006096012192 +no_defs";
+
+	mapProj = new Proj4js.Proj("GOOGLE");
+	stateProj = new Proj4js.Proj("EPSG:2927");
+
+	function projectExtent(extent) {
+		var minPt, maxPt, sourcePrj, destPrj;
+		// Determine source and destination projections.
+		sourcePrj = extent.spatialReference.wkid === 2927 ? stateProj : mapProj;
+		destPrj = sourcePrj === mapProj ? stateProj : mapProj;
+		// Extract points from extent.
+		minPt = new Proj4js.Point(extent.xmin, extent.ymin);
+		maxPt = new Proj4js.Point(extent.xmax, extent.ymax);
+		// Project the points.
+		Proj4js.transform(sourcePrj, destPrj, minPt);
+		Proj4js.transform(sourcePrj, destPrj, maxPt);
+		// Create the output extent.
+		return new Extent({
+			xmin: minPt.x,
+			ymin: minPt.y,
+			xmax: maxPt.x,
+			ymax: maxPt.y,
+			spatialReference: {
+				wkid: destPrj === stateProj ? 2927 : 3857
+			}
+		});
+
+	}
+
+
 
 	return declare([Evented], /** @lends extentSelector */ {
 
@@ -113,6 +147,7 @@ function (require, Evented, declare, on, Map, Graphic, Draw, connect, domConstru
 					}
 					draw.deactivate();
 					drawButton.textContent = "Draw";
+					event.stateGeometry = event.geometry ? projectExtent(event.geometry) : null;
 					self.emit("extent-change", event);
 				});
 
