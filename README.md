@@ -13,11 +13,7 @@ Placing the map into an `iframe` element seems to solve these issues.
 
 ## Remaining Issues ##
 
-### Cannot Shift + Draw box to zoom in IE 10 ###
-
-In all of the other tested browsers, the user is still able to zoom in by holding down shift and drawing a box.  This does not work in IE 10, though (unless IE 10 is set to an earlier version of the browser through the debugging tools).
-
-The user can still zoom using the mouse wheel, so this is a slight inconvenience, but not a show stopper.
+See the [issues list on GitHub].
 
 ## Notes ##
 
@@ -28,4 +24,5 @@ The user can still zoom using the mouse wheel, so this is a slight inconvenience
 
 [ArcGIS API for JavaScript]:http://help.arcgis.com/en/webapi/javascript/arcgis/
 [AJAX Control Toolkit]:http://www.ajaxcontroltoolkit.com/
+[issues list on GitHub]:https://github.com/WSDOT-GIS/ArcGIS-JS-with-AJAX-Control-Toolkit/issues
 [Map]:http://help.arcgis.com/en/webapi/javascript/arcgis/jsapi/map.html
