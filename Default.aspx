@@ -65,16 +65,20 @@
 					extentSelectorFrame.name = "extentSelector";
 					tabPanel._element.appendChild(extentSelectorFrame);
 
-					handleExtentChange = function (e) {
+					handleExtentChange = function (event) {
 						if (console) {
-							console.log(e);
+							console.log(event.data);
+							console.log(event.origin);
+							console.log(event.source);
 						}
 					};
 
-					if (extentSelectorFrame.addEventListener) {
-						extentSelectorFrame.addEventListener("extentchange", handleExtentChange);
-					} else if (extentSelectorFrame.attachEvent) {
-						extentSelectorFrame.attachEvent("onextentchange", handleExtentChange);
+					if (window.addEventListener) {
+						window.addEventListener("message", handleExtentChange, false);
+					} else if (window.attachEvent) {
+						window.attachEvent("onmessage", handleExtentChange);
+					} else if (window.onmessage) {
+						window.onmessage = handleExtentChange;
 					}
 				}
 			}
