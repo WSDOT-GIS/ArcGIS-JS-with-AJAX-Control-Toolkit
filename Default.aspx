@@ -101,7 +101,7 @@
 						<ajaxToolkit:TabContainer ID="TabContainer1" runat="server">
 							<ajaxToolkit:TabPanel ID="PlaceholderTabPanel" HeaderText="Other Tab" runat="server">
 								<ContentTemplate>
-									<p>This is just a placeholder.  Click on the "Map" tab.</p>
+									<p>This is just a placeholder.  Click on one of the other tabs.</p>
 								</ContentTemplate>
 							</ajaxToolkit:TabPanel>
 							<ajaxToolkit:TabPanel ID="MapTabPanel" HeaderText="Map" runat="server" OnClientClick="mapStuff.onTabClick">
