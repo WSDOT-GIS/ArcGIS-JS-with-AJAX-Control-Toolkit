@@ -74,7 +74,7 @@
 					if (extentSelectorFrame.addEventListener) {
 						extentSelectorFrame.addEventListener("extentchange", handleExtentChange);
 					} else if (extentSelectorFrame.attachEvent) {
-						extentSelectorFrame.attachEvent("onclick", handleExtentChange);
+						extentSelectorFrame.attachEvent("onextentchange", handleExtentChange);
 					}
 				}
 			}
