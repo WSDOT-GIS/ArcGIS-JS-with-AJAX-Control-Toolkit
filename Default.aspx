@@ -28,6 +28,7 @@
 		}
 	</style>
 	<script>
+		/*jslint white:true,browser:true,nomen:true */
 		(function () {
 			"use strict";
 			var mapFrame, extentSelectorFrame, mapStuff;
@@ -57,16 +58,24 @@
 			@param {EventArgs} e
 			*/
 			function onExtentSelectorTabClick(tabPanel, e) {
-				var extentSelector;
+				var extentSelector, handleExtentChange;
 				if (!extentSelectorFrame) {
 					extentSelectorFrame = document.createElement("iframe");
 					extentSelectorFrame.src = "extentSelector.html";
 					extentSelectorFrame.name = "extentSelector";
 					tabPanel._element.appendChild(extentSelectorFrame);
-					
-					extentSelectorFrame.contentWindow.addEventListener("extentchange", function (e) {
-						console.debug(e);
-					});
+
+					handleExtentChange = function (e) {
+						if (console) {
+							console.log(e.detail);
+						}
+					};
+
+					if (extentSelectorFrame.addEventListener) {
+						extentSelectorFrame.addEventListener("extentchange", handleExtentChange);
+					} else if (extentSelectorFrame.attachEvent) {
+						extentSelectorFrame.attachEvent("extentchange", handleExtentChange);
+					}
 				}
 			}
 

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<title></title>
-	<link rel="stylesheet" href="//serverapi.arcgisonline.com/jsapi/arcgis/3.5compact/js/esri/css/esri.css">
+	<link rel="stylesheet" href="//serverapi.arcgisonline.com/jsapi/arcgis/3.5compact/js/esri/css/esri.css" />
 	<script>
 		var dojoConfig = {
 			async: true,
@@ -38,12 +38,27 @@
 			var extentSelector;
 
 			extentSelector = new extentSelector("map");
-			window.extentSelector = extentSelector;
 
-			on(extentSelector, "extent-change", function (e) {
-				var event = new CustomEvent("extentchange", { detail: e });
-				window.dispatchEvent(event);
-			});
+			if (window.frameElement) {
+				on(extentSelector, "extent-change", function (e) {
+					var event, frame;
+					frame = window.frameElement;
+					if (window.CustomEvent) {
+						event = new CustomEvent("extentchange", { detail: e });
+						frame.dispatchEvent(event);
+					} else if (document.createEvent) {
+						event = document.createEvent("Event");
+						event.detail = e;
+						frame.dispatchEvent(event);
+					} else if (document.createEventObject) {
+						event = document.createEventObject();
+						event.detail = e;
+						// FIXME: IE 8: Microsoft JScript runtime error: Object doesn't support this property or method
+						frame.fireEvent("onextentchange", event);
+					}
+
+				});
+			}
 		});
 	</script>
 </body>
