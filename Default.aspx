@@ -67,14 +67,14 @@
 
 					handleExtentChange = function (e) {
 						if (console) {
-							console.log(e.detail);
+							console.log(e);
 						}
 					};
 
 					if (extentSelectorFrame.addEventListener) {
 						extentSelectorFrame.addEventListener("extentchange", handleExtentChange);
 					} else if (extentSelectorFrame.attachEvent) {
-						extentSelectorFrame.attachEvent("extentchange", handleExtentChange);
+						extentSelectorFrame.attachEvent("onclick", handleExtentChange);
 					}
 				}
 			}

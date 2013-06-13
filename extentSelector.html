@@ -41,20 +41,20 @@
 
 			if (window.frameElement) {
 				on(extentSelector, "extent-change", function (e) {
-					var event, frame;
+					var evt, frame;
 					frame = window.frameElement;
 					if (window.CustomEvent) {
-						event = new CustomEvent("extentchange", { detail: e });
-						frame.dispatchEvent(event);
+						evt = new CustomEvent("extentchange", { detail: e });
+						frame.dispatchEvent(evt);
 					} else if (document.createEvent) {
-						event = document.createEvent("Event");
-						event.detail = e;
-						frame.dispatchEvent(event);
+						evt = document.createEvent("Event");
+						evt.detail = e;
+						frame.dispatchEvent(evt);
 					} else if (document.createEventObject) {
-						event = document.createEventObject();
-						event.detail = e;
-						// FIXME: IE 8: Microsoft JScript runtime error: Object doesn't support this property or method
-						frame.fireEvent("onextentchange", event);
+						evt = document.createEventObject(window.event);
+						evt.detail = e;
+						// FIXME: IE 8: Microsoft JScript runtime error: Invalid argument.
+						document.fireEvent("extentchange", evt);
 					}
 
 				});
