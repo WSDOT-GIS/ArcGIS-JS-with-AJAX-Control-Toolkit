@@ -44,7 +44,7 @@
 					var parentWindow;
 					if (window.frameElement) {
 						parentWindow = window.frameElement.ownerDocument.parentWindow;
-						parent.postMessage(e, "*");
+						parent.postMessage(e, [window.location.protocol, window.location.host].join("//"));
 					}
 				});
 			}

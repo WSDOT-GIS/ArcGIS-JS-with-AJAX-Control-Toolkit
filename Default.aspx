@@ -31,25 +31,11 @@
 		/*jslint white:true,browser:true,nomen:true */
 		(function () {
 			"use strict";
-			var mapFrame, extentSelectorFrame, mapStuff;
+			var extentSelectorFrame, mapStuff;
 
 			// Create a global variable to act as a namespace for the global variables we need for this page.
 			if (!window.mapStuff) {
 				window.mapStuff = {};
-			}
-
-			/** Creates the map iframe if it does not already exist.
-			@param {Sys.Extended.UI.TabPanel} tabPanel The tab panel that was just activated.
-			@param {HTMLDivElement} tabPanel._element This is the div element of the tab panel.
-			@param {EventArgs} e
-			*/
-			function onTabClick(tabPanel, e) {
-				if (!mapFrame) {
-					mapFrame = document.createElement("iframe");
-					mapFrame.src = "Map.html";
-					mapFrame.name = "Map";
-					tabPanel._element.appendChild(mapFrame);
-				}
 			}
 
 			/** Creates the map iframe if it does not already exist.
@@ -84,7 +70,6 @@
 			}
 
 			// Make the onTabClick function globally available in the page.
-			window.mapStuff.onTabClick = onTabClick;
 			window.mapStuff.onExtentSelectorTabClick = onExtentSelectorTabClick;
 		}());
 	</script>
@@ -105,13 +90,7 @@
 						<ajaxToolkit:TabContainer ID="TabContainer1" runat="server">
 							<ajaxToolkit:TabPanel ID="PlaceholderTabPanel" HeaderText="Other Tab" runat="server">
 								<ContentTemplate>
-									<p>This is just a placeholder.  Click on one of the other tabs.</p>
-								</ContentTemplate>
-							</ajaxToolkit:TabPanel>
-							<ajaxToolkit:TabPanel ID="MapTabPanel" HeaderText="Map" runat="server" OnClientClick="mapStuff.onTabClick">
-								<ContentTemplate>
-									<%-- If the iframe needs to be created in the OnClientClick event to 
-										prevent the map from being forced to be 400 x 400 pixels. --%>
+									<p>This is just a placeholder.  Click on another tab.</p>
 								</ContentTemplate>
 							</ajaxToolkit:TabPanel>
 							<ajaxToolkit:TabPanel ID="ExtentSelectorTabPanel" HeaderText="ExtentSelector" runat="server" OnClientClick="mapStuff.onExtentSelectorTabClick">

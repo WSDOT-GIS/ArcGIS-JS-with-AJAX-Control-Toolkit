@@ -21,8 +21,11 @@ See the [issues list on GitHub].
 	* The `iframe` cannot be given an `id` attribute.
 	* The `iframe` must be created after the containing tab panel has been activated (i.e., in the tab panel's `OnClientClick` event handler). 
 
+* The best way to handle events from the `iframe` window in the parent window is to use [window.postMessage]. This seems to be the *only* way that will work with Internet Explorer 8.
+
 
 [ArcGIS API for JavaScript]:http://help.arcgis.com/en/webapi/javascript/arcgis/
 [AJAX Control Toolkit]:http://www.ajaxcontroltoolkit.com/
 [issues list on GitHub]:https://github.com/WSDOT-GIS/ArcGIS-JS-with-AJAX-Control-Toolkit/issues
 [Map]:http://help.arcgis.com/en/webapi/javascript/arcgis/jsapi/map.html
+[window.postMessage]:https://developer.mozilla.org/en-US/docs/Web/API/window.postMessage

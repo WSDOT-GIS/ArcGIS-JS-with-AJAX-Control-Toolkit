@@ -63,7 +63,6 @@
   <ItemGroup>
     <Content Include="Default.aspx" />
     <Content Include="extentSelector.html" />
-    <Content Include="Map.html" />
     <Content Include="offset.png" />
     <Content Include="Scripts\wsdot\extentSelector.js" />
     <Content Include="Web.config" />

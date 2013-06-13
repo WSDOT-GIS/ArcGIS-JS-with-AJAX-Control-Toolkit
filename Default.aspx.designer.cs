@@ -67,15 +67,6 @@ namespace ArcGisJSWithAjaxControlToolkit {
         protected global::AjaxControlToolkit.TabPanel PlaceholderTabPanel;
         
         /// <summary>
-        /// MapTabPanel control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.TabPanel MapTabPanel;
-        
-        /// <summary>
         /// ExtentSelectorTabPanel control.
         /// </summary>
         /// <remarks>
