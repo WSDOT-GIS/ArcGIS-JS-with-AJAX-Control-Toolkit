@@ -1,4 +1,4 @@
-﻿/*global define, require*/
+﻿/*global define, require, Proj4js*/
 /*jslint browser:true*/
 
 /** @file Creates a map from which a user can select an extent.
@@ -42,11 +42,18 @@ function (require, Evented, declare, on, Map, Graphic, Extent, Draw, connect, do
 
 	var mapProj, stateProj;
 
+	// Define the state plane projection.
 	Proj4js.defs["EPSG:2927"] = "+proj=lcc +lat_1=47.33333333333334 +lat_2=45.83333333333334 +lat_0=45.33333333333334 +lon_0=-120.5 +x_0=500000.0001016001 +y_0=0 +ellps=GRS80 +to_meter=0.3048006096012192 +no_defs";
 
+	// Create variables for map and state plane projections.
 	mapProj = new Proj4js.Proj("GOOGLE");
 	stateProj = new Proj4js.Proj("EPSG:2927");
 
+	/** Creates a projected version of an extent. If the extent is in state plane than the
+	returned extent will be in the map's projection and vice-versa.
+	@param {external:Extent} extent
+	@returns {external:Extent} A projected copy of the input extent.
+	*/
 	function projectExtent(extent) {
 		var minPt, maxPt, sourcePrj, destPrj;
 		// Determine source and destination projections.
@@ -87,15 +94,19 @@ function (require, Evented, declare, on, Map, Graphic, Extent, Draw, connect, do
 		*/
 		graphicsLayer: null,
 		/** Gets the currently selected extent in the map.
+		@param {Boolean} [useMapProjection] Set to true to return the extent in the original map projection, false to return in state plane. Defaults to false.
 		@instance
 		@returns {external:Extent} The first (and only) extent graphic shown on the map. The spatial reference will match that of the map. Will return null if no graphics are currently in the map.
 		*/
-		getSelectedExtent: function () {
+		getSelectedExtent: function (useMapProjection) {
 			var self = this, extent = null;
 			if (self.graphicsLayer) {
 				if (self.graphicsLayer.graphics.length) {
 					extent = self.graphicsLayer.graphics[0].geometry;
 				}
+			}
+			if (extent && !useMapProjection) {
+				extent = projectExtent(extent);
 			}
 			return extent;
 		},
@@ -108,6 +119,10 @@ function (require, Evented, declare, on, Map, Graphic, Extent, Draw, connect, do
 		setExtent: function (extent) {
 			if (this.graphicsLayer) {
 				this.graphicsLayer.clear();
+				// Project the extent if it is in state plane.
+				if (extent.spatialReference && extent.spatialReference.wkid === 2927) {
+					extent = projectExtent(extent);
+				}
 				this.graphicsLayer.add(new Graphic(extent));
 			}
 			return this;
