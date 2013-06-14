@@ -16,18 +16,19 @@
 	</script>
 	<script src="//serverapi.arcgisonline.com/jsapi/arcgis/3.5compact/"></script>
 	<style>
-	 html, body, #map {
-		 padding: 0;
-		 margin: 0;
-		 width: 100%;
-		 height: 100%;
-	 }
-	.map-toolbar {
-		z-index: 30;
-		position: absolute;
-		right: 1em;
-		top: 1em;
-	}
+		html, body, #map {
+			padding: 0;
+			margin: 0;
+			width: 100%;
+			height: 100%;
+		}
+
+		.map-toolbar {
+			z-index: 30;
+			position: absolute;
+			right: 1em;
+			top: 1em;
+		}
 	</style>
 </head>
 <body>
@@ -35,18 +36,37 @@
 	<script>
 		require(["wsdot/extentSelector", "dojo/on"], function (ExtentSelector, on) {
 			"use strict";
-			var xs;
+			var xs, extent;
 
-			xs = new ExtentSelector("map");
+			
 
 			if (window.frameElement) {
+				extent = window.frameElement.getAttribute("data-extent");
+				if (extent) {
+					extent = extent.split(",");
+					extent = {
+						xmin: Number(extent[0]),
+						ymin: Number(extent[1]),
+						xmax: Number(extent[2]),
+						ymax: Number(extent[3]),
+						spatialReference: {
+							wkid: 2927
+						}
+					};
+				}
+				xs = new ExtentSelector("map", {initExtent: extent});
+
 				on(xs, "extent-change", function (e) {
-					var parentWindow;
-					if (window.frameElement) {
-						parentWindow = window.frameElement.ownerDocument.parentWindow;
-						parent.postMessage(e, [window.location.protocol, window.location.host].join("//"));
-					}
+					var parentWindow, extent;
+					parentWindow = window.frameElement.ownerDocument.parentWindow;
+					
+
+
+					
+					window.parent.postMessage(e, [window.location.protocol, window.location.host].join("//"));
 				});
+			} else {
+				xs = new ExtentSelector("map");
 			}
 		});
 	</script>

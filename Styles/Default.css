@@ -1,0 +1,23 @@
+﻿.accordion .header, .accordion .selected-header {
+	padding: 0.2em 0.5em;
+}
+
+.accordion .header {
+	border: 1px solid black;
+	background-color: #a79191;
+}
+
+.accordion .content {
+	border: 2px inset lightgray;
+	padding: 1em;
+}
+
+.accordion .selected-header {
+	border: 1px solid black;
+	background-color: yellow;
+}
+/* Specify the size of the iframe here */
+iframe[src='Map.html'], iframe[src='extentSelector.html'] {
+	width: 100%;
+	height: 600px; /* Height must be an explicit value. */
+}

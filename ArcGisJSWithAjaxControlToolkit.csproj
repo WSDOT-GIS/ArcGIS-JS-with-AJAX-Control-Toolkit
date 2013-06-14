@@ -64,7 +64,9 @@
     <Content Include="Default.aspx" />
     <Content Include="extentSelector.html" />
     <Content Include="offset.png" />
+    <Content Include="Scripts\Default.js" />
     <Content Include="Scripts\wsdot\extentSelector.js" />
+    <Content Include="Styles\Default.css" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>

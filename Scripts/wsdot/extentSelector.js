@@ -31,13 +31,28 @@
 * @see {@link http://help.arcgis.com/en/webapi/javascript/arcgis/jsapi/graphicslayer-amd.html GraphicsLayer}
 */
 
-define(["require", "dojo/Evented", "dojo/_base/declare", "dojo/on", "esri/map", "esri/graphic",
-	"esri/geometry/Extent", "esri/toolbars/draw", "dojo/_base/connect", "dojo/dom-construct",
-	"dojo/dom-class", "dojo/domReady!","//cdnjs.cloudflare.com/ajax/libs/proj4js/1.1.0/proj4js-compressed.js"
+define(["dojo/Evented",
+	"dojo/_base/declare",
+	"dojo/on",
+	"esri/map",
+	"esri/graphic",
+	"esri/geometry/Extent",
+	"esri/toolbars/draw",
+	"dojo/_base/connect",
+	"dojo/dom-construct",
+	"dojo/dom-class",
+	"esri/layers/GraphicsLayer",
+	"esri/renderers/SimpleRenderer",
+	"esri/symbols/SimpleFillSymbol",
+	"esri/symbols/SimpleLineSymbol",
+	"dojo/_base/Color",
+	"dojo/domReady!",
+	"//cdnjs.cloudflare.com/ajax/libs/proj4js/1.1.0/proj4js-compressed.js"
 ], /** 
 * @exports wsdot/extentSelector 
 */
-function (require, Evented, declare, on, Map, Graphic, Extent, Draw, connect, domConstruct, domClass) {
+function (Evented, declare, on, Map, Graphic, Extent, Draw, connect, domConstruct, domClass,
+	GraphicsLayer, SimpleRenderer, SimpleFillSymbol, SimpleLineSymbol, Color) {
 	"use strict";
 
 	var mapProj, stateProj;
@@ -218,27 +233,23 @@ function (require, Evented, declare, on, Map, Graphic, Extent, Draw, connect, do
 
 
 			on(self.map, "load", function () {
-				require(["esri/layers/GraphicsLayer", "esri/renderers/SimpleRenderer", "esri/symbols/SimpleFillSymbol",
-					"esri/symbols/SimpleLineSymbol", "dojo/_base/Color"
-				], function (GraphicsLayer, SimpleRenderer, SimpleFillSymbol, SimpleLineSymbol, Color) {
-					var renderer, symbol;
+				var renderer, symbol;
 
-					createToolbarControls(self.map.root);
+				createToolbarControls(self.map.root);
 
-					symbol = new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID,
-						new SimpleLineSymbol(SimpleLineSymbol.STYLE_DASHDOT,
-						new Color([255, 0, 0]), 2), new Color([255, 255, 0, 0.25])
-					  );
+				symbol = new SimpleFillSymbol(SimpleFillSymbol.STYLE_SOLID,
+					new SimpleLineSymbol(SimpleLineSymbol.STYLE_DASHDOT,
+					new Color([255, 0, 0]), 2), new Color([255, 255, 0, 0.25])
+					);
 
-					self.graphicsLayer = new GraphicsLayer({ id: "graphics" });
-					renderer = new SimpleRenderer(symbol);
-					self.graphicsLayer.setRenderer(renderer);
-					self.map.addLayer(self.graphicsLayer);
-					if (options && options.initExtent) {
-						self.setExtent(options.initExtent);
-						self.map.setExtent(options.initExtent, true);
-					}
-				});
+				self.graphicsLayer = new GraphicsLayer({ id: "graphics" });
+				renderer = new SimpleRenderer(symbol);
+				self.graphicsLayer.setRenderer(renderer);
+				self.map.addLayer(self.graphicsLayer);
+				if (options && options.initExtent) {
+					self.setExtent(options.initExtent);
+					self.map.setExtent(self.getSelectedExtent(true), true);
+				}
 			});
 		}
 	});

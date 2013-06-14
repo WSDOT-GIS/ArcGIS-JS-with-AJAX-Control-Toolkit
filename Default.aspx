@@ -5,74 +5,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
 	<title></title>
-	<style>
-		.accordion .header, .accordion .selected-header {
-			padding: 0.2em 0.5em;
-		}
-		.accordion .header {
-			border: 1px solid black;
-			background-color: #a79191;
-		}
-		.accordion .content {
-			border: 2px inset lightgray;
-			padding: 1em;
-		}
-		.accordion .selected-header {
-			border: 1px solid black;
-			background-color: yellow;
-		}
-		/* Specify the size of the iframe here */
-		iframe[src='Map.html'], iframe[src='extentSelector.html'] {
-			width: 100%;
-			height: 600px; /* Height must be an explicit value. */
-		}
-	</style>
-	<script>
-		/*jslint white:true,browser:true,nomen:true */
-		(function () {
-			"use strict";
-			var extentSelectorFrame, mapStuff;
-
-			// Create a global variable to act as a namespace for the global variables we need for this page.
-			if (!window.mapStuff) {
-				window.mapStuff = {};
-			}
-
-			/** Creates the map iframe if it does not already exist.
-			@param {Sys.Extended.UI.TabPanel} tabPanel The tab panel that was just activated.
-			@param {HTMLDivElement} tabPanel._element This is the div element of the tab panel.
-			@param {EventArgs} e
-			*/
-			function onExtentSelectorTabClick(tabPanel, e) {
-				var extentSelector, handleExtentChange;
-				if (!extentSelectorFrame) {
-					extentSelectorFrame = document.createElement("iframe");
-					extentSelectorFrame.src = "extentSelector.html";
-					extentSelectorFrame.name = "extentSelector";
-					tabPanel._element.appendChild(extentSelectorFrame);
-
-					handleExtentChange = function (event) {
-						if (console) {
-							console.log(event.data);
-							console.log(event.origin);
-							console.log(event.source);
-						}
-					};
-
-					if (window.addEventListener) {
-						window.addEventListener("message", handleExtentChange, false);
-					} else if (window.attachEvent) {
-						window.attachEvent("onmessage", handleExtentChange);
-					} else if (window.onmessage) {
-						window.onmessage = handleExtentChange;
-					}
-				}
-			}
-
-			// Make the onTabClick function globally available in the page.
-			window.mapStuff.onExtentSelectorTabClick = onExtentSelectorTabClick;
-		}());
-	</script>
+	<link href="Styles/Default.css" rel="stylesheet" />
+	<script src="Scripts/Default.js"></script>
 </head>
 <body>
 	<form id="form1" runat="server">
