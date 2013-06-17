@@ -25,6 +25,46 @@ Placing the map into an `iframe` element seems to solve these issues.
 </ajaxToolkit:TabPanel>
 	```
 3. Add the function specified in the previous step.  A sample of this can be found in `Scripts\Default.js`.  This function needs to create an `iframe` element with the `src` attribute set to `extentSelector.html`.
+	```javascript
+
+	/** Creates the map iframe if it does not already exist.
+	@param {Sys.Extended.UI.TabPanel} tabPanel The tab panel that was just activated.
+	@param {HTMLDivElement} tabPanel._element This is the div element of the tab panel.
+	@param {EventArgs} e
+	*/
+	function onExtentSelectorTabClick(tabPanel, e) {
+		var handleExtentChange;
+		if (!extentSelectorFrame) {
+			extentSelectorFrame = document.createElement("iframe");
+			extentSelectorFrame.src = "extentSelector.html";
+			extentSelectorFrame.name = "extentSelector";
+			tabPanel._element.appendChild(extentSelectorFrame);
+
+			// Setup the event handler for the extent change.
+			handleExtentChange = function (event) {
+				var geom;
+				// Get the state plane geometry.
+				if (event && event.data !== undefined) {
+					if (event.data !== null) {
+						geom = event.data.stateGeometry;
+					}
+				}
+
+				// TODO: Do something with the geometry.
+			};
+
+			// Setup event listeners for messages from child iframe window.
+			// Modern browsers use addEventListener, but not all browsers do.
+			if (window.addEventListener) {
+				window.addEventListener("message", handleExtentChange, false);
+			} else if (window.attachEvent) {
+				window.attachEvent("onmessage", handleExtentChange);
+			} else if (window.onmessage) {
+				window.onmessage = handleExtentChange;
+			}
+		}
+	}
+	```
 4. Add a CSS rule for the iframe to specify its size.
 	```css
 	/* Specify the size of the iframe here */
