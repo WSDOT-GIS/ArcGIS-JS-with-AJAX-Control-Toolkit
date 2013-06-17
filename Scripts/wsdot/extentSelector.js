@@ -302,7 +302,7 @@ function (Evented, declare, on, Map, Graphic, Extent, Draw, connect, domConstruc
 						self.graphicsLayer.add(new Graphic(event.geometry));
 					}
 					draw.deactivate();
-					drawButton.textContent = "Draw";
+					drawButton.innerText = "Draw";
 					event.stateGeometry = event.geometry ? projectExtent(event.geometry) : null;
 					self.emit("extent-change", event);
 				});
@@ -329,12 +329,12 @@ function (Evented, declare, on, Map, Graphic, Extent, Draw, connect, domConstruc
 
 				// Setup the button click events.
 				on(drawButton, "click", function () {
-					if (this.textContent === "Draw") {
+					if (this.innerText === "Draw") {
 						draw.activate(Draw.EXTENT, null);
-						this.textContent = "Cancel";
+						this.innerText = "Cancel";
 					} else {
 						draw.deactivate();
-						this.textContent = "Draw";
+						this.innerText = "Draw";
 					}
 				});
 
