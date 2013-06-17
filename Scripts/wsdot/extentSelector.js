@@ -94,71 +94,7 @@ function (Evented, declare, on, Map, Graphic, Extent, Draw, connect, domConstruc
 
 	}
 
-	/** Creates a dialog for manually entering an extent.
-	 * @returns {dijit/Dialog} The returned dialog will have properties named xminbox, yminbox, xmaxbox, ymaxbox. The values of these properties are HTMLInputElements.
-	 */
-	function createDialog() {
-		var docFragment = document.createDocumentFragment(), xminbox, yminbox, xmaxbox, ymaxbox, div, okButton, cancelButton, dialog;
 
-		/** Creates an input box and associated label, appends them to another node.
-		 * @param {Element} rootNode The node to which the elements created by this function will be appended.
-		 * @param {String} labelText The text for the label element.
-		 * @param {String} propertyName The value of the "data-property" element of the input box. Should be one of the following values: xmin, ymin, xmax, ymax.
-		 * @returns {HTMLInputElement} Returns the input element.
-		 */
-		function createLabelAndElement(rootNode, labelText, propertyName) {
-			var div, node;
-			div = document.createElement("div");
-
-			node = document.createElement("label");
-			node.textContent = labelText;
-			div.appendChild(node);
-
-			node = document.createElement("input");
-			node.setAttribute("type", "number");
-			node.setAttribute("data-property", propertyName);
-			div.appendChild(node);
-
-			rootNode.appendChild(div);
-			return node;
-		}
-
-		xminbox = createLabelAndElement(docFragment, "X Min.", "xmin");
-		yminbox = createLabelAndElement(docFragment, "Y Min.", "ymin");
-		xmaxbox = createLabelAndElement(docFragment, "X Max.", "xmax");
-		ymaxbox = createLabelAndElement(docFragment, "Y Max.", "ymax");
-
-
-		div = document.createElement("div");
-		domClass.add(div, "table");
-
-		div.appendChild(docFragment);
-		docFragment = document.createDocumentFragment();
-		docFragment.appendChild(div);
-
-		div = document.createElement("div");
-		domClass.add(div, "button-container");
-
-		okButton = domConstruct.toDom("<button type='button'>OK</button>");
-		cancelButton = domConstruct.toDom("<button type='button'>Cancel</button>");
-
-		div.appendChild(okButton);
-		div.appendChild(cancelButton);
-
-		docFragment.appendChild(div);
-
-		dialog = new Dialog({
-			title: "Enter Cooridnates",
-			content: docFragment
-		});
-
-		dialog.xminbox = xminbox;
-		dialog.yminbox = yminbox;
-		dialog.xmaxbox = xmaxbox;
-		dialog.ymaxbox = ymaxbox;
-
-		return dialog;
-	}
 
 
 
@@ -201,19 +137,112 @@ function (Evented, declare, on, Map, Graphic, Extent, Draw, connect, domConstruc
 		setExtent: function (extent) {
 			if (this.graphicsLayer) {
 				this.graphicsLayer.clear();
-				// Project the extent if it is in state plane.
-				if (extent.spatialReference && extent.spatialReference.wkid === 2927) {
-					extent = projectExtent(extent);
+				if (extent) {
+					// Project the extent if it is in state plane.
+					if (extent.spatialReference && extent.spatialReference.wkid === 2927) {
+						extent = projectExtent(extent);
+					}
+					this.graphicsLayer.add(new Graphic(extent));
 				}
-				this.graphicsLayer.add(new Graphic(extent));
 			}
 			return this;
 		},
 		_dialog: null,
+		/** Creates a dialog for manually entering an extent.
+		 * @returns {dijit/Dialog} The returned dialog will have properties named xminbox, yminbox, xmaxbox, ymaxbox. The values of these properties are HTMLInputElements.
+		 */
+		_createDialog: function () {
+			var self = this, docFragment = document.createDocumentFragment(), xminbox, yminbox, xmaxbox, ymaxbox, div, okButton, cancelButton, dialog;
+
+			/** Creates an input box and associated label, appends them to another node.
+			 * @param {Element} rootNode The node to which the elements created by this function will be appended.
+			 * @param {String} labelText The text for the label element.
+			 * @param {String} propertyName The value of the "data-property" element of the input box. Should be one of the following values: xmin, ymin, xmax, ymax.
+			 * @returns {HTMLInputElement} Returns the input element.
+			 */
+			function createLabelAndElement(rootNode, labelText, propertyName) {
+				var div, node;
+				div = document.createElement("div");
+
+				node = document.createElement("label");
+				node.textContent = labelText;
+				div.appendChild(node);
+
+				node = document.createElement("input");
+				node.setAttribute("type", "number");
+				node.setAttribute("data-property", propertyName);
+				div.appendChild(node);
+
+				rootNode.appendChild(div);
+				return node;
+			}
+
+			xminbox = createLabelAndElement(docFragment, "X Min.", "xmin");
+			yminbox = createLabelAndElement(docFragment, "Y Min.", "ymin");
+			xmaxbox = createLabelAndElement(docFragment, "X Max.", "xmax");
+			ymaxbox = createLabelAndElement(docFragment, "Y Max.", "ymax");
+
+
+
+
+			div = document.createElement("div");
+			domClass.add(div, "table");
+
+			div.appendChild(docFragment);
+			docFragment = document.createDocumentFragment();
+			docFragment.appendChild(div);
+
+			div = document.createElement("div");
+			domClass.add(div, "button-container");
+
+			okButton = domConstruct.toDom("<button type='button'>OK</button>");
+			cancelButton = domConstruct.toDom("<button type='button'>Cancel</button>");
+
+			div.appendChild(okButton);
+			div.appendChild(cancelButton);
+
+			docFragment.appendChild(div);
+
+			dialog = new Dialog({
+				title: "Enter Cooridnates",
+				content: docFragment
+			});
+
+			dialog.xminbox = xminbox;
+			dialog.yminbox = yminbox;
+			dialog.xmaxbox = xmaxbox;
+			dialog.ymaxbox = ymaxbox;
+
+			on(okButton, "click", function () {
+				var extent;
+				extent = {
+					xmin: Number(xminbox.value),
+					ymin: Number(yminbox.value),
+					xmax: Number(xmaxbox.value),
+					ymax: Number(ymaxbox.value),
+					spatialReference: {
+						wkid: 2927
+					}
+				};
+				if (extent) {
+					self.setExtent(extent);
+					dialog.hide();
+				}
+			});
+
+			on(cancelButton, "click", function () {
+				dialog.hide();
+			});
+
+			return dialog;
+		},
+		/** Shows the manual input dialog.
+		 *@returns {dijit/Dialog}
+		 */
 		showDialog: function () {
 			var self = this, xminbox, yminbox, xmaxbox, ymaxbox, extent;
 			if (!self._dialog) {
-				self._dialog = createDialog();
+				self._dialog = self._createDialog();
 			}
 
 			// Set the input boxes to match the selected extent.
@@ -236,6 +265,8 @@ function (Evented, declare, on, Map, Graphic, Extent, Draw, connect, domConstruc
 			}
 
 			self._dialog.show();
+
+			return self._dialog;
 		},
 		/**
 		* @param {external:Element|external:String} mapDiv The element where the extentSelector will be created, or its id.
@@ -244,7 +275,7 @@ function (Evented, declare, on, Map, Graphic, Extent, Draw, connect, domConstruc
 		* @constructs
 		*/
 		constructor: function (mapDiv, options) {
-			var self = this;
+			var self = this, mapOptions;
 
 			/**
 			 * extent-change event
@@ -317,19 +348,26 @@ function (Evented, declare, on, Map, Graphic, Extent, Draw, connect, domConstruc
 				});
 			}
 
+			// Since the mapDiv can be either a DOM element or an id attribute, we must get the DOM element if an ID is provided.
 			if (typeof (mapDiv) === "string") {
 				mapDiv = document.getElementById(mapDiv);
 			}
 
-			//if (!mapDiv instanceof Element) {
-			//	throw new TypeError("mapDiv must be either an Element or the id of an Element.");
-			//}
+			if (options && options.initExtent) {
+				mapOptions = {
+					basemap: "streets",
+					extent: (options.initExtent.spatialReference && options.initExtent.spatialReference.wkid === 2927) ? projectExtent(options.initExtent) : options.initExtent
+				}
+			} else {
+				mapOptions = {
+					basemap: "streets",
+					center: [-120.80566406246835, 47.41322033015946],
+					zoom: 7
+				}
+			}
 
-			self.map = new Map(mapDiv, {
-				basemap: "streets",
-				center: [-120.80566406246835, 47.41322033015946],
-				zoom: 7
-			});
+			self.map = new Map(mapDiv, mapOptions);
+
 
 
 
@@ -350,7 +388,6 @@ function (Evented, declare, on, Map, Graphic, Extent, Draw, connect, domConstruc
 				self.map.addLayer(self.graphicsLayer);
 				if (options && options.initExtent) {
 					self.setExtent(options.initExtent);
-					self.map.setExtent(self.getSelectedExtent(true), true);
 				}
 			});
 		}
