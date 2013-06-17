@@ -165,7 +165,7 @@ function (Evented, declare, on, Map, Graphic, Extent, Draw, connect, domConstruc
 				div = document.createElement("div");
 
 				node = document.createElement("label");
-				node.textContent = labelText;
+				node.innerText = labelText;
 				div.appendChild(node);
 
 				node = document.createElement("input");
@@ -357,13 +357,13 @@ function (Evented, declare, on, Map, Graphic, Extent, Draw, connect, domConstruc
 				mapOptions = {
 					basemap: "streets",
 					extent: (options.initExtent.spatialReference && options.initExtent.spatialReference.wkid === 2927) ? projectExtent(options.initExtent) : options.initExtent
-				}
+				};
 			} else {
 				mapOptions = {
 					basemap: "streets",
 					center: [-120.80566406246835, 47.41322033015946],
 					zoom: 7
-				}
+				};
 			}
 
 			self.map = new Map(mapDiv, mapOptions);
