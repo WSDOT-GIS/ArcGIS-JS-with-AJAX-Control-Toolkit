@@ -145,7 +145,7 @@ function (Evented, declare, on, Map, Graphic, Extent, Draw, connect, domConstruc
 		},
 		_dialog: null,
 		_createDialog: function () {
-			var docFragment = document.createDocumentFragment(), props = ["xmin", "ymin", "xmax", "ymax"], node, div;
+			var docFragment = document.createDocumentFragment(), props = ["xmin", "ymin", "xmax", "ymax"], node, div, okButton, cancelButton;
 			for (var i = 0; i < props.length; i++) {
 				div = document.createElement("div");
 
@@ -164,10 +164,24 @@ function (Evented, declare, on, Map, Graphic, Extent, Draw, connect, domConstruc
 			domClass.add(div, "table");
 
 			div.appendChild(docFragment);
+			docFragment = document.createDocumentFragment();
+			docFragment.appendChild(div);
+
+			div = document.createElement("div");
+			domClass.add(div, "button-container");
+
+			okButton = domConstruct.toDom("<button type='button'>OK</button>");
+			cancelButton = domConstruct.toDom("<button type='button'>Cancel</button>");
+
+			div.appendChild(okButton);
+			div.appendChild(cancelButton);
+
+			docFragment.appendChild(div);
+			
 
 			return new Dialog({
 				title: "Enter Cooridnates",
-				content: div
+				content: docFragment
 			});
 		},
 		showDialog: function () {
