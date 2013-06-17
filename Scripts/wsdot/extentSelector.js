@@ -46,13 +46,14 @@ define(["dojo/Evented",
 	"esri/symbols/SimpleFillSymbol",
 	"esri/symbols/SimpleLineSymbol",
 	"dojo/_base/Color",
+	"dijit/Dialog",
 	"dojo/domReady!",
 	"//cdnjs.cloudflare.com/ajax/libs/proj4js/1.1.0/proj4js-compressed.js"
 ], /** 
 * @exports wsdot/extentSelector 
 */
 function (Evented, declare, on, Map, Graphic, Extent, Draw, connect, domConstruct, domClass,
-	GraphicsLayer, SimpleRenderer, SimpleFillSymbol, SimpleLineSymbol, Color) {
+	GraphicsLayer, SimpleRenderer, SimpleFillSymbol, SimpleLineSymbol, Color, Dialog) {
 	"use strict";
 
 	var mapProj, stateProj;
@@ -142,6 +143,41 @@ function (Evented, declare, on, Map, Graphic, Extent, Draw, connect, domConstruc
 			}
 			return this;
 		},
+		_dialog: null,
+		_createDialog: function () {
+			var docFragment = document.createDocumentFragment(), props = ["xmin", "ymin", "xmax", "ymax"], node, div;
+			for (var i = 0; i < props.length; i++) {
+				div = document.createElement("div");
+
+				node = document.createElement("label");
+				node.textContent = props[i];
+				div.appendChild(node);
+
+				node = document.createElement("input");
+				node.setAttribute("type", "number");
+				node.setAttribute("data-property", props[i]);
+				div.appendChild(node);
+
+				docFragment.appendChild(div);
+			}
+			div = document.createElement("div");
+			domClass.add(div, "table");
+
+			div.appendChild(docFragment);
+
+			return new Dialog({
+				title: "Enter Cooridnates",
+				content: div
+			});
+		},
+		showDialog: function () {
+			var self = this;
+			if (!self._dialog) {
+
+				self._dialog = self._createDialog();
+			}
+			self._dialog.show();
+		},
 		/**
 		* @param {external:Element|external:String} mapDiv The element where the extentSelector will be created, or its id.
 		* @param {Object} options
@@ -165,7 +201,7 @@ function (Evented, declare, on, Map, Graphic, Extent, Draw, connect, domConstruc
 			@private
 			*/
 			function createToolbarControls(mapRoot) {
-				var docFrag, draw, toolbar, drawButton, clearButton;
+				var docFrag, draw, toolbar, drawButton, clearButton, dialogButton;
 				// Create the draw toolbar.
 				draw = new Draw(self.map);
 				// Setup the draw-complete event.
@@ -195,6 +231,9 @@ function (Evented, declare, on, Map, Graphic, Extent, Draw, connect, domConstruc
 				clearButton = domConstruct.toDom("<button id='clearButton' type='button'>Clear</button>");
 				toolbar.appendChild(clearButton);
 
+				dialogButton = domConstruct.toDom("<button id='dialogButton' type='button'>Manual Entry</button>");
+				toolbar.appendChild(dialogButton);
+
 				// Add the toolbar to the document.
 				mapRoot.appendChild(toolbar);
 
@@ -212,6 +251,10 @@ function (Evented, declare, on, Map, Graphic, Extent, Draw, connect, domConstruc
 				on(clearButton, "click", function () {
 					self.graphicsLayer.clear();
 					self.emit("extent-change", null);
+				});
+
+				on(dialogButton, "click", function () {
+					self.showDialog();
 				});
 			}
 

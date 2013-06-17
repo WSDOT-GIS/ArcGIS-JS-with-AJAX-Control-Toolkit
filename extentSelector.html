@@ -3,6 +3,7 @@
 <head>
 	<title></title>
 	<link rel="stylesheet" href="//serverapi.arcgisonline.com/jsapi/arcgis/3.5compact/js/esri/css/esri.css" />
+	<link rel="stylesheet" href="//serverapi.arcgisonline.com/jsapi/arcgis/3.5compact/js/dojo/dijit/themes/claro/claro.css " />
 	<script>
 		var dojoConfig = {
 			async: true,
@@ -29,9 +30,21 @@
 			right: 1em;
 			top: 1em;
 		}
+
+		.dijitDialogPaneContent > .table {
+			display: table;
+		}
+
+		.dijitDialogPaneContent > .table > div {
+			display: table-row;
+		}
+
+		.dijitDialogPaneContent > .table > div > * {
+			display: table-cell;
+		}
 	</style>
 </head>
-<body>
+<body class="claro">
 	<div id="map"></div>
 	<script>
 		require(["wsdot/extentSelector", "dojo/on"], function (ExtentSelector, on) {
