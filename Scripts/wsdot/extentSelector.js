@@ -34,6 +34,7 @@
 define(["dojo/Evented",
 	"dojo/_base/declare",
 	"dojo/on",
+	"dojo/query",
 	"esri/map",
 	"esri/graphic",
 	"esri/geometry/Extent",
@@ -52,7 +53,7 @@ define(["dojo/Evented",
 ], /** 
 * @exports wsdot/extentSelector 
 */
-function (Evented, declare, on, Map, Graphic, Extent, Draw, connect, domConstruct, domClass,
+function (Evented, declare, on, query, Map, Graphic, Extent, Draw, connect, domConstruct, domClass,
 	GraphicsLayer, SimpleRenderer, SimpleFillSymbol, SimpleLineSymbol, Color, Dialog) {
 	"use strict";
 
@@ -145,7 +146,7 @@ function (Evented, declare, on, Map, Graphic, Extent, Draw, connect, domConstruc
 		},
 		_dialog: null,
 		_createDialog: function () {
-			var docFragment = document.createDocumentFragment(), props = ["xmin", "ymin", "xmax", "ymax"], node, div, okButton, cancelButton;
+			var docFragment = document.createDocumentFragment(), props = ["xmin", "ymin", "xmax", "ymax"], node, div, okButton, cancelButton, dialog;
 			for (var i = 0; i < props.length; i++) {
 				div = document.createElement("div");
 
@@ -177,19 +178,40 @@ function (Evented, declare, on, Map, Graphic, Extent, Draw, connect, domConstruc
 			div.appendChild(cancelButton);
 
 			docFragment.appendChild(div);
-			
 
-			return new Dialog({
+			dialog = new Dialog({
 				title: "Enter Cooridnates",
 				content: docFragment
 			});
+
+			return dialog;
 		},
 		showDialog: function () {
-			var self = this;
+			var self = this, xminbox, yminbox, xmaxbox, ymaxbox, extent;
 			if (!self._dialog) {
 
 				self._dialog = self._createDialog();
 			}
+
+			// Set the input boxes to match the selected extent.
+			xminbox = query("[data-property=xmin]")[0];
+			yminbox = query("[data-property=ymin]")[0];
+			xmaxbox = query("[data-property=xmax]")[0];
+			ymaxbox = query("[data-property=ymax]")[0];
+
+			extent = self.getSelectedExtent();
+			if (extent) {
+				xminbox.value = extent.xmin;
+				yminbox.value = extent.ymin;
+				xmaxbox.value = extent.xmax;
+				ymaxbox.value = extent.ymax;
+			} else {
+				xminbox.value = null;
+				yminbox.value = null;
+				xmaxbox.value = null;
+				ymaxbox.value = null;
+			}
+
 			self._dialog.show();
 		},
 		/**
