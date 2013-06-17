@@ -7,11 +7,10 @@ When placing an [ArcGIS API for JavaScript] map inside of an [AJAX Control Toolk
 
 ![Offset screenshot](offset.png)
 
-## Workaround ##
+## Workarounds ##
+Although the best solution to this issue would be to rewrite the UI portion so that it no longer uses the [AJAX Control Toolkit], if that is not an option you can avoid these issues by placing the map into an `iframe` element.
 
-Placing the map into an `iframe` element seems to solve these issues.
-
-## How to use *extentSelector* widget ##
+## How to use *extentSelector* widget in an `iframe` ##
 
 1. Copy these files from this project into your own project:
 	* `Scripts/wsdot/extentSelector.js`
