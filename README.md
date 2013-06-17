@@ -1,4 +1,4 @@
-﻿Sample: Issue with ArcGIS JavaScript API Map and Ajax Control Toolkit
+Sample: Issue with ArcGIS JavaScript API Map and Ajax Control Toolkit
 =====================================================================
 
 ## Problem ##
@@ -10,6 +10,29 @@ When placing an [ArcGIS API for JavaScript] map inside of an [AJAX Control Toolk
 ## Workaround ##
 
 Placing the map into an `iframe` element seems to solve these issues.
+
+## How to use *extentSelector* widget ##
+
+1. Copy these files from this project into your own project:
+	* `Scripts/wsdot/extentSelector.js`
+	* `extentSelector.html`
+2. In the TabPanel that will contain the extent selector map, add an event handler in the TabPanel's `OnClientClick` attribute. This is demonstrated in the file `Default.aspx`.
+	```xml
+<ajaxToolkit:TabPanel ID="ExtentSelectorTabPanel" HeaderText="ExtentSelector" runat="server" OnClientClick="mapStuff.onExtentSelectorTabClick">
+	<ContentTemplate>
+
+	</ContentTemplate>
+</ajaxToolkit:TabPanel>
+	```
+3. Add the function specified in the previous step.  A sample of this can be found in `Scripts\Default.js`.  This function needs to create an `iframe` element with the `src` attribute set to `extentSelector.html`.
+4. Add a CSS rule for the iframe to specify its size.
+	```css
+	/* Specify the size of the iframe here */
+	iframe[src='extentSelector.html'] {
+		width: 100%;
+		height: 600px; /* Height must be an explicit value. */
+	}
+	```
 
 ## Remaining Issues ##
 
