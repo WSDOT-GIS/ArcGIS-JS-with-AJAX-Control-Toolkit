@@ -94,6 +94,72 @@ function (Evented, declare, on, Map, Graphic, Extent, Draw, connect, domConstruc
 
 	}
 
+	/** Creates a dialog for manually entering an extent.
+	 * @returns {dijit/Dialog} The returned dialog will have properties named xminbox, yminbox, xmaxbox, ymaxbox. The values of these properties are HTMLInputElements.
+	 */
+	function createDialog() {
+		var docFragment = document.createDocumentFragment(), xminbox, yminbox, xmaxbox, ymaxbox, div, okButton, cancelButton, dialog;
+
+		/** Creates an input box and associated label, appends them to another node.
+		 * @param {Element} rootNode The node to which the elements created by this function will be appended.
+		 * @param {String} labelText The text for the label element.
+		 * @param {String} propertyName The value of the "data-property" element of the input box. Should be one of the following values: xmin, ymin, xmax, ymax.
+		 * @returns {HTMLInputElement} Returns the input element.
+		 */
+		function createLabelAndElement(rootNode, labelText, propertyName) {
+			var div, node;
+			div = document.createElement("div");
+
+			node = document.createElement("label");
+			node.textContent = labelText;
+			div.appendChild(node);
+
+			node = document.createElement("input");
+			node.setAttribute("type", "number");
+			node.setAttribute("data-property", propertyName);
+			div.appendChild(node);
+
+			rootNode.appendChild(div);
+			return node;
+		}
+
+		xminbox = createLabelAndElement(docFragment, "X Min.", "xmin");
+		yminbox = createLabelAndElement(docFragment, "Y Min.", "ymin");
+		xmaxbox = createLabelAndElement(docFragment, "X Max.", "xmax");
+		ymaxbox = createLabelAndElement(docFragment, "Y Max.", "ymax");
+
+
+		div = document.createElement("div");
+		domClass.add(div, "table");
+
+		div.appendChild(docFragment);
+		docFragment = document.createDocumentFragment();
+		docFragment.appendChild(div);
+
+		div = document.createElement("div");
+		domClass.add(div, "button-container");
+
+		okButton = domConstruct.toDom("<button type='button'>OK</button>");
+		cancelButton = domConstruct.toDom("<button type='button'>Cancel</button>");
+
+		div.appendChild(okButton);
+		div.appendChild(cancelButton);
+
+		docFragment.appendChild(div);
+
+		dialog = new Dialog({
+			title: "Enter Cooridnates",
+			content: docFragment
+		});
+
+		dialog.xminbox = xminbox;
+		dialog.yminbox = yminbox;
+		dialog.xmaxbox = xmaxbox;
+		dialog.ymaxbox = ymaxbox;
+
+		return dialog;
+	}
+
 
 
 	return declare([Evented], /** @lends extentSelector */ {
@@ -144,73 +210,10 @@ function (Evented, declare, on, Map, Graphic, Extent, Draw, connect, domConstruc
 			return this;
 		},
 		_dialog: null,
-		_createDialog: function () {
-			var docFragment = document.createDocumentFragment(), xminbox, yminbox, xmaxbox, ymaxbox, div, okButton, cancelButton, dialog;
-
-			/** Creates an input box and associated label, appends them to another node.
-			 * @param {Element} rootNode The node to which the elements created by this function will be appended.
-			 * @param {String} labelText The text for the label element.
-			 * @param {String} propertyName The value of the "data-property" element of the input box. Should be one of the following values: xmin, ymin, xmax, ymax.
-			 * @returns {HTMLInputElement} Returns the input element.
-			 */
-			function createLabelAndElement(rootNode, labelText, propertyName) {
-				var div, node;
-				div = document.createElement("div");
-
-				node = document.createElement("label");
-				node.textContent = labelText;
-				div.appendChild(node);
-
-				node = document.createElement("input");
-				node.setAttribute("type", "number");
-				node.setAttribute("data-property", propertyName);
-				div.appendChild(node);
-
-				rootNode.appendChild(div);
-				return node;
-			}
-
-			xminbox = createLabelAndElement(docFragment, "X Min.", "xmin");
-			yminbox = createLabelAndElement(docFragment, "Y Min.", "ymin");
-			xmaxbox = createLabelAndElement(docFragment, "X Max.", "xmax");
-			ymaxbox = createLabelAndElement(docFragment, "Y Max.", "ymax");
-
-
-			div = document.createElement("div");
-			domClass.add(div, "table");
-
-			div.appendChild(docFragment);
-			docFragment = document.createDocumentFragment();
-			docFragment.appendChild(div);
-
-			div = document.createElement("div");
-			domClass.add(div, "button-container");
-
-			okButton = domConstruct.toDom("<button type='button'>OK</button>");
-			cancelButton = domConstruct.toDom("<button type='button'>Cancel</button>");
-
-			div.appendChild(okButton);
-			div.appendChild(cancelButton);
-
-			docFragment.appendChild(div);
-
-			dialog = new Dialog({
-				title: "Enter Cooridnates",
-				content: docFragment
-			});
-
-			dialog.xminbox = xminbox;
-			dialog.yminbox = yminbox;
-			dialog.xmaxbox = xmaxbox;
-			dialog.ymaxbox = ymaxbox;
-
-			return dialog;
-		},
 		showDialog: function () {
 			var self = this, xminbox, yminbox, xmaxbox, ymaxbox, extent;
 			if (!self._dialog) {
-
-				self._dialog = self._createDialog();
+				self._dialog = createDialog();
 			}
 
 			// Set the input boxes to match the selected extent.
