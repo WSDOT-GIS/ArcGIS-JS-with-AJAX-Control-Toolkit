@@ -29,7 +29,7 @@
 				var geom;
 				// Get the state plane geometry.
 				if (event && event.data !== undefined) {
-					if (event.data != null) {
+					if (event.data !== null) {
 						geom = event.data.stateGeometry;
 					}
 				}
