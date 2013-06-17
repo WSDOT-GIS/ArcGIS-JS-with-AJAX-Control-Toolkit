@@ -1,5 +1,5 @@
 ﻿/*global define, require, Proj4js*/
-/*jslint browser:true*/
+/*jslint browser:true,nomen:true*/
 
 /** @file Creates a map from which a user can select an extent.
 */
@@ -34,7 +34,6 @@
 define(["dojo/Evented",
 	"dojo/_base/declare",
 	"dojo/on",
-	"dojo/query",
 	"esri/map",
 	"esri/graphic",
 	"esri/geometry/Extent",
@@ -53,7 +52,7 @@ define(["dojo/Evented",
 ], /** 
 * @exports wsdot/extentSelector 
 */
-function (Evented, declare, on, query, Map, Graphic, Extent, Draw, connect, domConstruct, domClass,
+function (Evented, declare, on, Map, Graphic, Extent, Draw, connect, domConstruct, domClass,
 	GraphicsLayer, SimpleRenderer, SimpleFillSymbol, SimpleLineSymbol, Color, Dialog) {
 	"use strict";
 
@@ -146,21 +145,37 @@ function (Evented, declare, on, query, Map, Graphic, Extent, Draw, connect, domC
 		},
 		_dialog: null,
 		_createDialog: function () {
-			var docFragment = document.createDocumentFragment(), props = ["xmin", "ymin", "xmax", "ymax"], node, div, okButton, cancelButton, dialog;
-			for (var i = 0; i < props.length; i++) {
+			var docFragment = document.createDocumentFragment(), xminbox, yminbox, xmaxbox, ymaxbox, div, okButton, cancelButton, dialog;
+
+			/** Creates an input box and associated label, appends them to another node.
+			 * @param {Element} rootNode The node to which the elements created by this function will be appended.
+			 * @param {String} labelText The text for the label element.
+			 * @param {String} propertyName The value of the "data-property" element of the input box. Should be one of the following values: xmin, ymin, xmax, ymax.
+			 * @returns {HTMLInputElement} Returns the input element.
+			 */
+			function createLabelAndElement(rootNode, labelText, propertyName) {
+				var div, node;
 				div = document.createElement("div");
 
 				node = document.createElement("label");
-				node.textContent = props[i];
+				node.textContent = labelText;
 				div.appendChild(node);
 
 				node = document.createElement("input");
 				node.setAttribute("type", "number");
-				node.setAttribute("data-property", props[i]);
+				node.setAttribute("data-property", propertyName);
 				div.appendChild(node);
 
-				docFragment.appendChild(div);
+				rootNode.appendChild(div);
+				return node;
 			}
+
+			xminbox = createLabelAndElement(docFragment, "X Min.", "xmin");
+			yminbox = createLabelAndElement(docFragment, "Y Min.", "ymin");
+			xmaxbox = createLabelAndElement(docFragment, "X Max.", "xmax");
+			ymaxbox = createLabelAndElement(docFragment, "Y Max.", "ymax");
+
+
 			div = document.createElement("div");
 			domClass.add(div, "table");
 
@@ -184,6 +199,11 @@ function (Evented, declare, on, query, Map, Graphic, Extent, Draw, connect, domC
 				content: docFragment
 			});
 
+			dialog.xminbox = xminbox;
+			dialog.yminbox = yminbox;
+			dialog.xmaxbox = xmaxbox;
+			dialog.ymaxbox = ymaxbox;
+
 			return dialog;
 		},
 		showDialog: function () {
@@ -194,10 +214,10 @@ function (Evented, declare, on, query, Map, Graphic, Extent, Draw, connect, domC
 			}
 
 			// Set the input boxes to match the selected extent.
-			xminbox = query("[data-property=xmin]")[0];
-			yminbox = query("[data-property=ymin]")[0];
-			xmaxbox = query("[data-property=xmax]")[0];
-			ymaxbox = query("[data-property=ymax]")[0];
+			xminbox = self._dialog.xminbox;
+			yminbox = self._dialog.yminbox;
+			xmaxbox = self._dialog.xmaxbox;
+			ymaxbox = self._dialog.ymaxbox;
 
 			extent = self.getSelectedExtent();
 			if (extent) {
