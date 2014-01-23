@@ -66,6 +66,7 @@ Although the best solution to this issue would be to rewrite the UI portion so t
 	```
 4. Add a CSS rule for the iframe to specify its size.
 	```css
+
 	/* Specify the size of the iframe here */
 	iframe[src='extentSelector.html'] {
 		width: 100%;
